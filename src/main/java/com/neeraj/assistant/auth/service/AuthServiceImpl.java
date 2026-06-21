@@ -39,7 +39,19 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public AuthResponse login(LoginRequest request){
-        return null;
+        
+        User user = userRepository.findByemail(request.getEmail())
+                   .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+
+        if(!passwordEncoder.matches(request.getPassword(),user.getPassword())){
+            throw new RuntimeException("Invalid email or password");
+        }
+        
+        String token = jwtService.generateToken((user.getEmail()));
+        return new AuthResponse(token);
+
+
+
     }
 
 }
