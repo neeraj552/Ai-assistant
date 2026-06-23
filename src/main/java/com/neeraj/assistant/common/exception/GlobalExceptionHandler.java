@@ -50,12 +50,39 @@ public class GlobalExceptionHandler {
     }
     
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handledNotFound(){
+    public ResponseEntity<ErrorResponse> handledNotFound(
+            ResourceNotFoundException ex, 
+            HttpServletRequest request){
+
+                ErrorResponse response = ErrorResponse.builder()
+                     .timestamp(LocalDateTime.now())
+                     .status(HttpStatus.NOT_FOUND.value())
+                     .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                     .message(ex.getMessage())
+                     .path(request.getRequestURI())
+                     .build();
+
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(response);
+
 
     }
     
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handledGenericException(){
+    public ResponseEntity<ErrorResponse> handledGenericException(
+            Exception ex, 
+            HttpServletRequest request){
+
+                ErrorResponse response = ErrorResponse.builder()
+                     .timestamp(LocalDateTime.now())
+                     .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                     .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                     .message(ex.getMessage())
+                     .path(request.getRequestURI())
+                     .build();
+
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(response);
 
     }
 
