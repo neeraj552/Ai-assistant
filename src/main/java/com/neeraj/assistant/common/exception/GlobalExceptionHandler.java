@@ -2,11 +2,14 @@ package com.neeraj.assistant.common.exception;
 
 import java.time.LocalDateTime;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.neeraj.assistant.file.exception.FileStorageException;
+import com.neeraj.assistant.file.exception.InvalidFileException;
+import com.neeraj.assistant.file.exception.ResourceNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
 

@@ -10,6 +10,8 @@ import com.neeraj.assistant.common.security.SecurityUtils;
 import com.neeraj.assistant.file.dto.FileUploadResponse;
 import com.neeraj.assistant.file.entity.FileDocument;
 import com.neeraj.assistant.file.entity.UploadStatus;
+import com.neeraj.assistant.file.exception.FileStorageException;
+import com.neeraj.assistant.file.exception.InvalidFileException;
 import com.neeraj.assistant.file.repository.FileRepository;
 import com.neeraj.assistant.file.util.FileStorageUtil;
 import com.neeraj.assistant.user.entity.User;
@@ -45,11 +47,11 @@ public class FileServiceImpl implements FileService {
     private void validateFile(MultipartFile file) {
 
         if(file.isEmpty()){
-            throw new RuntimeException("File is Empty");
+            throw new InvalidFileException("File is Empty");
         }
 
         if (!"application/pdf".equals(file.getContentType())) {
-        throw new RuntimeException("Only PDF files are allowed");
+        throw new InvalidFileException("Only PDF files are allowed");
         }
     }
 
@@ -60,7 +62,7 @@ public class FileServiceImpl implements FileService {
         try{
             return fileStorageUtil.saveFile(file);
         } catch(IOException e){
-            throw new RuntimeException("File Upload failed", e);
+            throw new FileStorageException("File Upload failed", e);
         }
 
     }

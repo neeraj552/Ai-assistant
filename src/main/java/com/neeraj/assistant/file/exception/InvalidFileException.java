@@ -1,4 +1,4 @@
-package com.neeraj.assistant.common.exception;
+package com.neeraj.assistant.file.exception;
 
 public class InvalidFileException extends RuntimeException {
 
