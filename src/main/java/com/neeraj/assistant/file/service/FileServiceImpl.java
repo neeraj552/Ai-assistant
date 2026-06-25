@@ -1,20 +1,29 @@
 package com.neeraj.assistant.file.service;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.List;
+import java.util.UUID;
 
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.neeraj.assistant.common.security.SecurityUtils;
+import com.neeraj.assistant.file.dto.FileDownloadResponse;
+import com.neeraj.assistant.file.dto.FileResponse;
 import com.neeraj.assistant.file.dto.FileUploadResponse;
 import com.neeraj.assistant.file.entity.FileDocument;
 import com.neeraj.assistant.file.entity.UploadStatus;
 import com.neeraj.assistant.file.exception.FileStorageException;
 import com.neeraj.assistant.file.exception.InvalidFileException;
+import com.neeraj.assistant.file.exception.ResourceNotFoundException;
+import com.neeraj.assistant.file.mapper.FileMapper;
 import com.neeraj.assistant.file.repository.FileRepository;
 import com.neeraj.assistant.file.util.FileStorageUtil;
 import com.neeraj.assistant.user.entity.User;
+
 import lombok.RequiredArgsConstructor;
 
 
@@ -98,4 +107,52 @@ public class FileServiceImpl implements FileService {
     );
 
     }
+
+    
+    @Override
+    public List<FileResponse> getMyFiles() {
+
+    User user = SecurityUtils.getCurrentUser();
+
+    return fileRepository.findByUser(user)
+            .stream()
+            .map(FileMapper::toResponse)
+            .toList();
+    }
+    
+    @Override
+    public void deleteFile(UUID fileId){
+        User user = SecurityUtils.getCurrentUser();
+
+        FileDocument file = fileRepository
+                .findByIdAndUser(fileId, user)
+                .orElseThrow(() -> new ResourceNotFoundException("File not found"));
+
+        try{
+            fileStorageUtil.deleteFile(file.getStoredName());
+        } catch(IOException e){
+            throw new FileStorageException("Failed to delete file", e);
+        }        
+
+        fileRepository.delete(file);
+    }
+
+    @Override
+    public FileDownloadResponse downloadFile(UUID id){
+        User user = SecurityUtils.getCurrentUser();
+
+        FileDocument file = fileRepository
+                .findByIdAndUser(id, user)
+                .orElseThrow(() -> new ResourceNotFoundException("File not found"));
+
+            Resource resource =
+                fileStorageUtil.loadFile(file.getStoredName());
+
+            return new FileDownloadResponse(
+                  resource, 
+                  file.getOriginalName(),
+                  file.getContentType()
+                );       
+    }
+    
 }
