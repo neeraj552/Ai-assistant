@@ -102,6 +102,12 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!--pdfBox-->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.5</version>
+        </dependency>
 
     </dependencies>
 
