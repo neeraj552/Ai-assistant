@@ -50,6 +50,9 @@ public class ChatMessage {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String answer;
 
+    @Column(nullable = false)
+    private String modelUsed;
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

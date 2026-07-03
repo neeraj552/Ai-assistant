@@ -3,8 +3,6 @@ package com.neeraj.assistant.chat.dto;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import lombok.Getter;
-
 
 public record ChatResponse(
 
@@ -13,6 +11,8 @@ public record ChatResponse(
     String question,
 
     String answer,
+
+    String modelUsed,
 
     LocalDateTime createdAt
 

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.neeraj.assistant.chat.exception.AIServiceException;
 import com.neeraj.assistant.file.exception.FileStorageException;
 import com.neeraj.assistant.file.exception.InvalidFileException;
 import com.neeraj.assistant.file.exception.ResourceNotFoundException;
@@ -109,5 +110,20 @@ public class GlobalExceptionHandler {
                         .body(response);
 
             }
+    @ExceptionHandler(AIServiceException.class)
+    public ResponseEntity<ErrorResponse>handledAiException(
+        AIServiceException ex,
+        HttpServletRequest request
+    ){
+                ErrorResponse response = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+
+    }
 
 }

@@ -1,4 +1,5 @@
 package com.neeraj.assistant.ai.client;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,7 @@ import com.neeraj.assistant.ai.dto.GroqRequest;
 import com.neeraj.assistant.ai.dto.GroqResponse;
 import com.neeraj.assistant.ai.dto.Message;
 import com.neeraj.assistant.ai.prompt.PromptTemplates;
+import com.neeraj.assistant.chat.exception.AIServiceException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,34 +28,44 @@ public class GroqClient {
 
     public String generateSummary(String documentText) {
 
-    String prompt = PromptTemplates.SUMMARY_PROMPT
-            .formatted(documentText);
+        String prompt = PromptTemplates.SUMMARY_PROMPT.formatted(documentText);
 
-    GroqRequest request = new GroqRequest(
-            model,
-            List.of(new Message("user", prompt))
-    );
-
-    GroqResponse response =
-            groqRestClient.post()
-                    .header("Authorization", "Bearer " + apiKey)
-                    .header("Content-Type", "application/json")
-                    .body(request)
-                    .retrieve()
-                    .body(GroqResponse.class);
-
-    if (response == null
-            || response.choices() == null
-            || response.choices().isEmpty()) {
-
-        throw new RuntimeException("Groq returned an empty response");
+        return generateCompletion(prompt);
     }
 
-    return response
-            .choices()
-            .get(0)
-            .message()
-            .content();
-}
+    public String generateAnswer(String documentText, String question) {
 
+        String prompt = PromptTemplates.CHAT_PROMPT.formatted(documentText, question);
+
+        return generateCompletion(prompt);
+    }
+
+    private String generateCompletion(String prompt) {
+
+        GroqRequest request = new GroqRequest(
+                model,
+                List.of(new Message("user", prompt))
+        );
+
+        GroqResponse response =
+                groqRestClient.post()
+                        .header("Authorization", "Bearer " + apiKey)
+                        .header("Content-Type", "application/json")
+                        .body(request)
+                        .retrieve()
+                        .body(GroqResponse.class);
+
+        if (response == null
+                || response.choices() == null
+                || response.choices().isEmpty()) {
+
+            throw new AIServiceException("Groq returned an empty response");
+        }
+
+        return response
+                .choices()
+                .get(0)
+                .message()
+                .content();
+    }
 }

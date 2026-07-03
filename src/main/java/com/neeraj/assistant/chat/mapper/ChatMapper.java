@@ -1,19 +1,21 @@
 package com.neeraj.assistant.chat.mapper;
 
 import com.neeraj.assistant.chat.dto.ChatResponse;
+import com.neeraj.assistant.chat.entity.ChatMessage;
 
 public class ChatMapper {
     private ChatMapper(){
 
     }
 
-    public static ChatResponse toResponse(ChatResponse chatMessage){
+    public static ChatResponse toResponse(ChatMessage chatMessage){
 
         return new ChatResponse(
-            chatMessage.id(),
-            chatMessage.question(),
-            chatMessage.answer(),
-            chatMessage.createdAt()
+            chatMessage.getId(),
+            chatMessage.getQuestion(),
+            chatMessage.getModelUsed(),
+            chatMessage.getAnswer(),
+            chatMessage.getCreatedAt()
 
         );
     }
