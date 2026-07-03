@@ -1,6 +1,7 @@
 package com.neeraj.assistant.chat.service;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,6 +55,8 @@ public class ChatServiceImpl implements ChatService {
         ChatMessage chatMessage = ChatMessage.builder()
                     .question(request.question())
                     .answer(answer)
+                    .modelUsed("llama-3.3-70b-versatile")
+                    .createdAt(LocalDateTime.now())
                     .file(file)
                     .user(user)
                     .build();

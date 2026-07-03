@@ -13,8 +13,8 @@ public class ChatMapper {
         return new ChatResponse(
             chatMessage.getId(),
             chatMessage.getQuestion(),
-            chatMessage.getModelUsed(),
             chatMessage.getAnswer(),
+            chatMessage.getModelUsed(),
             chatMessage.getCreatedAt()
 
         );
