@@ -56,7 +56,7 @@ public class ChatServiceImpl implements ChatService {
                     .question(request.question())
                     .answer(answer)
                     .modelUsed("llama-3.3-70b-versatile")
-                    .createdAt(LocalDateTime.now())
+                    .createdAt(LocalDateTime.now())  
                     .file(file)
                     .user(user)
                     .build();

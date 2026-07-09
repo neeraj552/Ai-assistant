@@ -22,6 +22,7 @@ import com.neeraj.assistant.file.exception.ResourceNotFoundException;
 import com.neeraj.assistant.file.mapper.FileMapper;
 import com.neeraj.assistant.file.repository.FileRepository;
 import com.neeraj.assistant.file.util.FileStorageUtil;
+import com.neeraj.assistant.rag.service.ChunkService;
 import com.neeraj.assistant.user.entity.User;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class FileServiceImpl implements FileService {
 
     private final FileRepository fileRepository;
     private final FileStorageUtil fileStorageUtil;
+    private final ChunkService    chunkService;
 
     @Override
     public FileUploadResponse uploadFile(MultipartFile file) {
@@ -47,6 +49,8 @@ public class FileServiceImpl implements FileService {
         FileDocument document = buildFileDocument(file, storedName, user);
 
         FileDocument savedFile = fileRepository.save(document);
+        
+        chunkService.processDocument(savedFile.getId());
 
         return buildResponse(savedFile);
     }
