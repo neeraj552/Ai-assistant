@@ -10,6 +10,7 @@ import com.neeraj.assistant.file.entity.FileDocument;
 import com.neeraj.assistant.file.exception.ResourceNotFoundException;
 import com.neeraj.assistant.file.repository.FileRepository;
 import com.neeraj.assistant.rag.chunk.DocumentChunker;
+import com.neeraj.assistant.rag.embedding.service.EmbeddingService;
 import com.neeraj.assistant.rag.entity.DocumentChunk;
 import com.neeraj.assistant.rag.repository.DocumentChunkRepository;
 import com.neeraj.assistant.summary.util.PdfExtractor;
@@ -26,6 +27,7 @@ public class ChunkServiceImpl implements ChunkService {
     private final PdfExtractor   pdfExtractor;
     private final DocumentChunker documentChunker;
     private final DocumentChunkRepository chunkRepository;
+    private final EmbeddingService embeddingService;
     
     @Override
     public void processDocument(UUID fileId){
@@ -42,13 +44,17 @@ public class ChunkServiceImpl implements ChunkService {
         chunkRepository.deleteByFile(file);
 
         for(int i = 0; i < chunks.size(); i++){
+            String chunkText = chunks.get(i);
+            String embedding = embeddingService.generateEmbedding(chunkText);
             DocumentChunk chunk = DocumentChunk.builder()
                     .chunkIndex(i)
                     .content(chunks.get(i))
+                    .embedding(embedding)
                     .file(file)
                     .build();
             
             chunkRepository.save(chunk);
+
         }
 
 
