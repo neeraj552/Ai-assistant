@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.neeraj.assistant.rag.embedding.client.EmbeddingClient;
 import com.neeraj.assistant.rag.repository.DocumentChunkRepository;
+import com.pgvector.PGvector;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +18,18 @@ public class EmbeddingServiceImpl implements EmbeddingService {
     private final EmbeddingClient embeddingClient;
 
     @Override
-    public String generateEmbedding(String text) {
+    public PGvector generateEmbedding(String text) {
 
         List<Float> embedding =
                 embeddingClient.generateEmbedding(text);
+        
+        float[] vector = new float[embedding.size()];
 
-        return embedding.toString();
+        for(int i = 0; i < embedding.size(); i++){
+            vector[i] = embedding.get(i);
+        }
+            
+
+        return  new PGvector();
     }
 }

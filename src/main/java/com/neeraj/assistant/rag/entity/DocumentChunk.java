@@ -23,6 +23,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.pgvector.PGvector;
 
 @Entity
 @Table(name = "document_chunks",
@@ -49,8 +50,8 @@ public class DocumentChunk {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
     
-    @Column(columnDefinition = "TEXT")
-    private String embedding;
+    @Column(columnDefinition = "vector(1024")
+    private PGvector embedding;
     
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

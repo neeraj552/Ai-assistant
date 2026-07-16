@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    image: pgvector/pgvector:pg17
+
+    container_name: ai-assistant-db
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ai_assistant
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5434:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

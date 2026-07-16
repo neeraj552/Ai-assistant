@@ -1,6 +1,7 @@
 package com.neeraj.assistant.rag.embedding.service;
+import com.pgvector.PGvector;
 
 public interface EmbeddingService {
 
-    String generateEmbedding(String text);
+    PGvector generateEmbedding(String text);
 }
