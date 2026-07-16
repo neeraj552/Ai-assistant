@@ -14,7 +14,6 @@ import com.neeraj.assistant.rag.embedding.service.EmbeddingService;
 import com.neeraj.assistant.rag.entity.DocumentChunk;
 import com.neeraj.assistant.rag.repository.DocumentChunkRepository;
 import com.neeraj.assistant.summary.util.PdfExtractor;
-import com.pgvector.PGvector;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +45,7 @@ public class ChunkServiceImpl implements ChunkService {
 
         for(int i = 0; i < chunks.size(); i++){
             String chunkText = chunks.get(i);
-            PGvector embedding = embeddingService.generateEmbedding(chunkText);
+            float[] embedding = embeddingService.generateEmbedding(chunkText);
             DocumentChunk chunk = DocumentChunk.builder()
                     .chunkIndex(i)
                     .content(chunks.get(i))

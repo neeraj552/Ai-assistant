@@ -4,7 +4,10 @@ package com.neeraj.assistant.rag.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.hibernate.annotations.Array;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import com.neeraj.assistant.file.entity.FileDocument;
 
@@ -23,7 +26,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.pgvector.PGvector;
 
 @Entity
 @Table(name = "document_chunks",
@@ -50,8 +52,10 @@ public class DocumentChunk {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
     
-    @Column(columnDefinition = "vector(1024")
-    private PGvector embedding;
+    @JdbcTypeCode(SqlTypes.VECTOR)
+    @Array(length = 1024)
+    @Column(columnDefinition = "vector(1024)")
+    private float[] embedding;
     
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

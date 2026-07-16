@@ -1,0 +1,25 @@
+package com.neeraj.assistant.rag.embedding.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.neeraj.assistant.rag.entity.DocumentChunk;
+import com.neeraj.assistant.rag.repository.DocumentChunkRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class RetrievalService {
+
+    private final EmbeddingService embeddingService;
+
+    private final DocumentChunkRepository documentChunkRepository;
+
+    public List<DocumentChunk> retrieveRelevantChunks(String question, int limit){
+        float[] queryVector = embeddingService.generateEmbedding(question);
+        return documentChunkRepository.findMostSimilaChunks(queryVector, limit);
+    }
+
+}
