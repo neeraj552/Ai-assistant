@@ -19,10 +19,12 @@ public interface DocumentChunkRepository extends JpaRepository<DocumentChunk, UU
     @Query( value = """
             SELECT *
             FROM document_chunks
+            WHERE file_id = :file
             ORDER BY embedding <=> CAST(:queryEmbedding AS vector)
             LIMIT :limit
             """, nativeQuery  = true )
     List<DocumentChunk> findMostSimilaChunks(
+        @Param("file") UUID file,
         @Param("queryEmbedding") float[] queryEmbedding,
         @Param("limit") int limit);
 

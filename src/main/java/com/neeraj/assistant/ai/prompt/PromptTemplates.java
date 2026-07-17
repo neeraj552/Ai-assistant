@@ -16,19 +16,23 @@ public final class PromptTemplates {
             """;
 
     public static final String CHAT_PROMPT = """
-            You are an AI assistant that answers questions strictly using the provided document.
+        You are an AI assistant that answers questions using ONLY the provided context.
 
-            Rules:
-            1. Answer ONLY using information from the document.
-            2. If the answer is not present in the document, say:
-               "I couldn't find that information in the document."
-            3. Do not make up or assume information.
-            4. Keep the answer clear and concise.
+        Rules:
+        1. Answer ONLY using the provided context.
+        2. If the answer is not present in the context, reply:
+           "I couldn't find that information in the uploaded document."
+        3. Do not make up facts or use outside knowledge.
+        4. Keep the answer clear, concise, and accurate.
 
-            Document:
-            %s
+        Context:
+        -----------------------
+        %s
+        -----------------------
 
-            Question:
-            %s
-            """;
+        Question:
+        %s
+
+        Answer:
+        """;
 }

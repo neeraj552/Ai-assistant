@@ -1,9 +1,10 @@
 package com.neeraj.assistant.chat.service;
 
-import java.io.File;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -17,24 +18,27 @@ import com.neeraj.assistant.common.security.SecurityUtils;
 import com.neeraj.assistant.file.entity.FileDocument;
 import com.neeraj.assistant.file.exception.ResourceNotFoundException;
 import com.neeraj.assistant.file.repository.FileRepository;
-import com.neeraj.assistant.summary.util.PdfExtractor;
+import com.neeraj.assistant.rag.embedding.service.RetrievalService;
+import com.neeraj.assistant.rag.entity.DocumentChunk;
 import com.neeraj.assistant.user.entity.User;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ChatServiceImpl implements ChatService {
 
     private final ChatRepository chatRepository;
 
     private final FileRepository fileRepository;
 
-    private final PdfExtractor   pdfExtractor;
-
     private final GroqClient     groqClient;
+
+    private final RetrievalService retrievalService;
 
     
     @Override
@@ -46,12 +50,28 @@ public class ChatServiceImpl implements ChatService {
                    .findByIdAndUser(fileId, user)
                    .orElseThrow(() -> new ResourceNotFoundException("File not found"));
 
-        File pdf = new File(file.getFilePath());
+        List<DocumentChunk> chunks =
+                    retrievalService.retrieveRelevantChunks( file, request.question(), 5);
 
-        String documentText = pdfExtractor.extractText(pdf);
+        log.info("Retrieved {} relevant chunks for file: {}", chunks.size(), file.getId());
 
-        String answer = groqClient.generateAnswer(documentText, request.question());
+        chunks.forEach(chunk ->
+        log.debug(
+        "Retrieved chunk {} ({} chars)",
+        chunk.getChunkIndex(),
+        chunk.getContent().length()
+        )
+        );
+        
+        chunks.sort(Comparator.comparingInt(DocumentChunk::getChunkIndex));
 
+        String context = chunks.stream()
+                .map(DocumentChunk::getContent)
+                .collect(Collectors.joining("\n\n"));
+        
+        String answer =
+                groqClient.generateAnswer(context, request.question()); 
+                   
         ChatMessage chatMessage = ChatMessage.builder()
                     .question(request.question())
                     .answer(answer)
