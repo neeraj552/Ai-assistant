@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.neeraj.assistant.auth.dto.AuthResponse;
 import com.neeraj.assistant.auth.dto.LoginRequest;
 import com.neeraj.assistant.auth.dto.RegisterRequest;
+import com.neeraj.assistant.auth.exceptions.InvalidCrendentialsException;
 import com.neeraj.assistant.user.entity.Role;
 import com.neeraj.assistant.user.entity.User;
 import com.neeraj.assistant.user.repository.UserRepository;
@@ -41,10 +42,10 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse login(LoginRequest request){
         
         User user = userRepository.findByemail(request.getEmail())
-                   .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+                   .orElseThrow(() -> new InvalidCrendentialsException("Invalid email or password"));
 
         if(!passwordEncoder.matches(request.getPassword(),user.getPassword())){
-            throw new RuntimeException("Invalid email or password");
+            throw new InvalidCrendentialsException("Invalid email or password");
         }
         
         String token = jwtService.generateToken((user.getEmail()));

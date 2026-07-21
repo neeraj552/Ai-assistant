@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.neeraj.assistant.auth.exceptions.InvalidCrendentialsException;
 import com.neeraj.assistant.chat.exception.AIServiceException;
 import com.neeraj.assistant.file.exception.FileStorageException;
 import com.neeraj.assistant.file.exception.InvalidFileException;
@@ -144,5 +145,22 @@ public class GlobalExceptionHandler {
               .build();
         
               return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-}
+        }
+        
+        @ExceptionHandler(InvalidCrendentialsException.class)
+        public ResponseEntity<ErrorResponse> handledInvalidCrendetials(
+                InvalidCrendentialsException ex,
+                HttpServletRequest request
+        ){
+
+                ErrorResponse response = ErrorResponse.builder()
+                     .timestamp(LocalDateTime.now())
+                     .status(HttpStatus.UNAUTHORIZED.value())
+                     .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                     .message(ex.getMessage())
+                     .path(request.getRequestURI())
+                     .build();
+
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
 }
