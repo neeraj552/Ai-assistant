@@ -13,6 +13,8 @@ import com.neeraj.assistant.auth.service.AuthService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import com.neeraj.assistant.auth.dto.ForgotPasswordRequest;
+import com.neeraj.assistant.auth.dto.ResetPasswordRequest;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -28,4 +30,31 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request){
         return ResponseEntity.ok(authService.login(request));
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Void> forgotPassword(
+
+        @Valid @RequestBody ForgotPasswordRequest request
+
+    ) {
+
+    authService.forgotPassword(request);
+
+    return ResponseEntity.ok().build();
+
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(
+
+        @Valid @RequestBody ResetPasswordRequest request
+
+    ) {
+
+    authService.resetPassword(request);
+
+    return ResponseEntity.ok().build();
+
+    }
+    
 }

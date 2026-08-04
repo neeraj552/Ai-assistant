@@ -33,7 +33,7 @@ public class SummaryController {
                 @PathVariable UUID fileId){
 
                     return ResponseEntity.ok(
-                        summaryService.generateSummary(fileId));
+                        summaryService.getSummary(fileId));
                 }        
 
 }

@@ -115,6 +115,12 @@
             <artifactId>hibernate-vector</artifactId>
             <version>6.6.53.Final</version>
         </dependency>
+         
+        <!--emailVerification-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
 
 </dependencies>
 

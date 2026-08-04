@@ -14,6 +14,4 @@ public class FileUploadResponse {
     private String fileName;
     private UploadStatus status;
     private String message;
-
-
 }

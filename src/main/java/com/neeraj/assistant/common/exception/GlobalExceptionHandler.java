@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.neeraj.assistant.auth.exceptions.InvalidCrendentialsException;
+import com.neeraj.assistant.auth.exceptions.InvalidResetTokenException;
+import com.neeraj.assistant.auth.exceptions.ResetTokenExpiredException;
 import com.neeraj.assistant.chat.exception.AIServiceException;
 import com.neeraj.assistant.file.exception.FileStorageException;
 import com.neeraj.assistant.file.exception.InvalidFileException;
@@ -162,5 +164,40 @@ public class GlobalExceptionHandler {
                      .build();
 
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        @ExceptionHandler(InvalidResetTokenException.class)
+        public ResponseEntity<ErrorResponse> handledInvalidResetToken(
+        InvalidResetTokenException ex,
+        HttpServletRequest request
+        ) {
+
+          ErrorResponse response = ErrorResponse.builder()
+            .timestamp(LocalDateTime.now())
+            .status(HttpStatus.BAD_REQUEST.value())
+            .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+            .message(ex.getMessage())
+            .path(request.getRequestURI())
+            .build();
+
+        return ResponseEntity.badRequest().body(response);
+        }
+
+
+        @ExceptionHandler(ResetTokenExpiredException.class)
+        public ResponseEntity<ErrorResponse> handledResetTokenExpired(
+        ResetTokenExpiredException ex,
+        HttpServletRequest request
+        ) {
+
+        ErrorResponse response = ErrorResponse.builder()
+            .timestamp(LocalDateTime.now())
+            .status(HttpStatus.BAD_REQUEST.value())
+            .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+            .message(ex.getMessage())
+            .path(request.getRequestURI())
+            .build();
+
+        return ResponseEntity.badRequest().body(response);
         }
 }
