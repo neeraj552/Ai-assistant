@@ -20,6 +20,7 @@ import com.neeraj.assistant.file.dto.FileDownloadResponse;
 import com.neeraj.assistant.file.dto.FileResponse;
 import com.neeraj.assistant.file.dto.FileUploadResponse;
 import com.neeraj.assistant.file.service.FileService;
+import com.neeraj.assistant.file.entity.FileSortType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -73,6 +74,25 @@ public ResponseEntity<Resource> downloadFile(@PathVariable UUID id){
                     "\"")
             .body(response.getResource());
 
+
+}
+
+@GetMapping("/search")
+public ResponseEntity<List<FileResponse>> searchFiles(
+        @RequestParam String keyword
+) {
+    return ResponseEntity.ok(
+            fileService.searchFiles(keyword)
+    );
+}
+@GetMapping("/sort")
+public ResponseEntity<List<FileResponse>> sortFiles(
+        @RequestParam FileSortType by
+) {
+
+    return ResponseEntity.ok(
+            fileService.sortFiles(by)
+    );
 
 }
 

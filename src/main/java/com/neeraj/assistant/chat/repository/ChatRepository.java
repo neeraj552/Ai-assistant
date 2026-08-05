@@ -23,4 +23,6 @@ public interface ChatRepository extends JpaRepository<ChatMessage, UUID>{
         User user
     );
 
+    long countByUser(User user);
+
 }
